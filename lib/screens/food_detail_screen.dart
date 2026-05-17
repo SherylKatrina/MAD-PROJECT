@@ -133,8 +133,8 @@ class FoodDetailScreen extends ConsumerWidget {
       automaticallyImplyLeading: false,
       flexibleSpace: FlexibleSpaceBar(
         background: Hero(
-          tag: 'food_image_${batch.id}',
-          child: LiveImage(imageUrl: batch.name, width: double.infinity, borderRadius: 0),
+          tag: 'food_${batch.id}',
+          child: LiveImage(width: double.infinity, borderRadius: 0),
         ),
       ),
     );
@@ -288,36 +288,7 @@ class FoodDetailScreen extends ConsumerWidget {
             const SizedBox(width: 32),
             Expanded(
               child: GlowingButton(
-                onPressed: () {
-                  final newOrder = Order(
-                    id: 'o${DateTime.now().millisecondsSinceEpoch}',
-                    batchId: batch.id,
-                    buyerId: 'u1',
-                    sellerId: batch.sellerId,
-                    quantity: 1,
-                    totalAmount: batch.price,
-                    orderTime: DateTime.now(),
-                    status: OrderStatus.pending,
-                  );
-
-                  ref.read(orderProvider.notifier).placeOrder(newOrder);
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Row(
-                        children: [
-                          const Icon(Icons.flash_on_rounded, color: Colors.white),
-                          const SizedBox(width: 8),
-                          Text('Order for ${batch.name} placed successfully!'),
-                        ],
-                      ),
-                      backgroundColor: AppColors.primary,
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-
-                  context.go('/orders');
-                },
+                onPressed: () {},
                 text: 'PLACE ORDER',
                 icon: Icons.flash_on_rounded,
               ),
