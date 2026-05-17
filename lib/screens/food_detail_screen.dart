@@ -129,12 +129,12 @@ class FoodDetailScreen extends ConsumerWidget {
 
   Widget _buildSliverAppBar(FoodBatch batch, BuildContext context) {
     return SliverAppBar(
-      expandedHeight: 380.0,
+      expandedHeight: MediaQuery.of(context).size.height * 0.4,
       automaticallyImplyLeading: false,
       flexibleSpace: FlexibleSpaceBar(
         background: Hero(
-          tag: 'food_${batch.id}',
-          child: LiveImage(width: double.infinity, borderRadius: 0),
+          tag: 'food_image_${batch.id}',
+          child: LiveImage(imageUrl: batch.name, width: double.infinity, borderRadius: 0),
         ),
       ),
     );
@@ -249,12 +249,11 @@ class FoodDetailScreen extends ConsumerWidget {
 
   Widget _buildTrustBadges() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _trustItem(Icons.clean_hands_rounded, 'Hygienic'),
-        _trustItem(Icons.verified_user_rounded, 'ID Verified'),
-        _trustItem(Icons.star_rounded, 'Top Chef'),
-        _trustItem(Icons.eco_rounded, 'Sustainable'),
+        Expanded(child: _trustItem(Icons.clean_hands_rounded, 'Hygienic')),
+        Expanded(child: _trustItem(Icons.verified_user_rounded, 'ID Verified')),
+        Expanded(child: _trustItem(Icons.star_rounded, 'Top Chef')),
+        Expanded(child: _trustItem(Icons.eco_rounded, 'Sustainable')),
       ],
     );
   }
@@ -288,7 +287,38 @@ class FoodDetailScreen extends ConsumerWidget {
             const SizedBox(width: 32),
             Expanded(
               child: GlowingButton(
-                onPressed: () {},
+                onPressed: () {
+                  final user = ref.read(userProfileProvider);
+                  final newOrder = Order(
+                    id: 'o${DateTime.now().millisecondsSinceEpoch}',
+                    batchId: batch.id,
+                    buyerId: user.id,
+                    sellerId: seller.sellerId,
+                    quantity: 1,
+                    totalAmount: batch.price,
+                    orderTime: DateTime.now(),
+                    status: OrderStatus.pending,
+                    pickupEta: batch.pickupTime,
+                  );
+
+                  ref.read(orderProvider.notifier).placeOrder(newOrder);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Row(
+                        children: [
+                          const Icon(Icons.flash_on_rounded, color: Colors.white),
+                          const SizedBox(width: 8),
+                          Text('Order for ${batch.name} placed successfully!'),
+                        ],
+                      ),
+                      backgroundColor: AppColors.primary,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+
+                  context.go('/orders');
+                },
                 text: 'PLACE ORDER',
                 icon: Icons.flash_on_rounded,
               ),
