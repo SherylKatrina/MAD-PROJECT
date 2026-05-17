@@ -133,8 +133,8 @@ class FoodDetailScreen extends ConsumerWidget {
       automaticallyImplyLeading: false,
       flexibleSpace: FlexibleSpaceBar(
         background: Hero(
-          tag: 'food_${batch.id}',
-          child: LiveImage(width: double.infinity, borderRadius: 0),
+          tag: 'food_image_${batch.id}',
+          child: LiveImage(imageUrl: batch.name, width: double.infinity, borderRadius: 0),
         ),
       ),
     );
